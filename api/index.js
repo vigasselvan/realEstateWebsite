@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';    
 import { fileURLToPath } from 'url';
 import path from 'path';  // Import the 'path' module
-import userRouter from './routes/user.route.js';        
+import userRouter from './routes/user.route.js';   //used userRouter instead of router since lot router name are used in this module      
+import authRouter from './routes/auth.route.js';  
 
 // Get the directory path of the current module
 const __filename = fileURLToPath(import.meta.url);
@@ -17,7 +18,7 @@ dotenv.config({ path: envFilePath });
 
 const port = process.env.PORT;
 const app = express();
-mongoose.connect("mongodb+srv://admin-vigas:welcome123@cluster0.yieowhx.mongodb.net/?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true }).then( () => {
+mongoose.connect(process.env.URI, { useNewUrlParser: true, useUnifiedTopology: true }).then( () => {
     console.log('Connected to database ');
 })
 .catch( (err) => {
@@ -28,5 +29,8 @@ app.listen(port, ()=>{
     console.log("Server is running on port " + port + "!");
 });
 
+app.use(express.json()); 
 
-app.use('/api/user', userRouter);
+
+app.use('/api/user', userRouter);   //to access middleware in userRouter.js
+app.use('/api/auth', authRouter);   
