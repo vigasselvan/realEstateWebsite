@@ -3,7 +3,7 @@ import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import {errorHandler} from '../utils/error.js';
 
-export const signUp = async(req, res, next) => {
+export const signup = async(req, res, next) => {
     const {username, email, password} = req.body;
     const hashPassword = bcryptjs.hashSync(password, 10);   //encrypt password  
     const newUser = new User({username, email, password : hashPassword});
@@ -15,7 +15,7 @@ export const signUp = async(req, res, next) => {
     }
 };
 
-export const signIn = async(req, res, next) => {
+export const signin = async(req, res, next) => {
     const {email, password} = req.body;  
     
     try{
