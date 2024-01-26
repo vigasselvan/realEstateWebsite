@@ -5,13 +5,14 @@ import {signInStart, signInSuccess, signInFailure} from '../redux/user/userSlice
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading, error } = useSelector((state) => state.user);       //useSelector is a hook that takes the current state as an argument and returns whatever data you want from it.
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch();                                 
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.id]: e.target.value,
+      [e.target.id]: e.target.value,                  //using [] to make it dynamic property name assaignments
     });
   };
   const handleSubmit = async (e) => {
