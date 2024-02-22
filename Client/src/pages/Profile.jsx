@@ -27,16 +27,17 @@ export default function Profile() {
     uploadTask.on('state_changed', (snapshot) => {                     //this method is called when the file is uploaded to the storage.
       const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;            //this is the percentage of the file that is uploaded to the storage.                                                             
       setFilePerc(Math.round(progress));                                                     //rounded to the nearest integer of percentage file uploaded.
-    });
+    },
     (error)=>{
-      setFileUploadError(true);                                                  //this is the error message that is shown when the file is not uploaded to the storage.
-    };
+     setFileUploadError(true);                                                  //this is the error message that is shown when the file is not uploaded to the storage.
+    },
     ()=>{
-      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {            //this is the method that gets the download url of the file that is uploaded to the storage.
-        setFormData({...formData, avatar: downloadURL});                          //formData is the data that the user input in the form. It is empty at first, but when the user input the data in the form, it will be changed to the data that the user input in the form.
-      });
+      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>            //this is the method that gets the download url of the file that is uploaded to the storage.
+        setFormData({...formData, avatar: downloadURL})                      //formData is the data that the user input in the form. It is empty at first, but when the user input the data in the form, it will be changed to the data that the user input in the form.
+      );
     }
-  }
+    );
+  };
       // allow read;
   // allow write: if
   // request.resource.size < 2 * 1024 * 1024 &&
@@ -47,7 +48,12 @@ export default function Profile() {
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
       <form className='flex flex-col gap-4' >
         <input type='file' onChange={(e) => setFile(e.target.files[0])} ref={fileRef} hidden accept='image/*' />        {/* this tag is hidden and ref to below img tag, so when the img is clicked, this tag become clicked and seems like img tag works like file upload tag.*/}
-        <img onClick={()=> fileRef.current.click()} src={formData.avatar || currentUser.avatar} alt='profile' className= 'rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2' />        {/* when the img is clicked, the file upload tag is clicked.*/}
+        <img
+          onClick={() => fileRef.current.click()}
+          src={formData.avatar || currentUser.avatar}
+          alt='profile'
+          className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2'
+        />                                                                   {/* when the img is clicked, the file upload tag is clicked.*/}
         <p className='text-sm self-center'>
         {fileUploadError ? (
           <span className='text-red-700'>file upload ERROR(image less than 2 mb)</span>
