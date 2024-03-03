@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import path from 'path';  // Import the 'path' module
+import cookieParser from 'cookie-parser';
 import userRouter from './routes/user.route.js';   //used userRouter instead of router since lot router name are used in this module      
 import authRouter from './routes/auth.route.js';  
 
@@ -36,13 +37,15 @@ app.listen(port, ()=>{
 app.use(express.json()); 
 
 
+app.use(cookieParser());
+
 app.use('/api/user', userRouter);   //to access middleware in userRouter.js
 app.use('/api/auth', authRouter);   
 
 // Server-side redirect for '/api' routes
-app.use('/api', (req, res) => {
-    res.redirect('http://localhost:3000/api/auth/sign-up');
-});
+// app.use('/api', (req, res) => {
+//     res.redirect('http://localhost:3000/api/auth/sign-up');
+// });
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
