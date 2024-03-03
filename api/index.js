@@ -43,9 +43,9 @@ app.use('/api/user', userRouter);   //to access middleware in userRouter.js
 app.use('/api/auth', authRouter);   
 
 // Server-side redirect for '/api' routes
-// app.use('/api', (req, res) => {
-//     res.redirect('http://localhost:3000/api/auth/sign-up');
-// });
+app.use('/api', (req, res) => {
+    res.redirect('http://localhost:3000/api/auth/sign-up');
+});
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
