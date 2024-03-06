@@ -7,6 +7,7 @@ import path from 'path';  // Import the 'path' module
 import cookieParser from 'cookie-parser';
 import userRouter from './routes/user.route.js';   //used userRouter instead of router since lot router name are used in this module      
 import authRouter from './routes/auth.route.js';  
+import listingRouter from './routes/listing.route.js';
 
 // Get the directory path of the current module
 const __filename = fileURLToPath(import.meta.url);
@@ -41,6 +42,7 @@ app.use(cookieParser());
 
 app.use('/api/user', userRouter);   //to access middleware in userRouter.js
 app.use('/api/auth', authRouter);   
+app.use('/api/listing', listingRouter);   //to access middleware in listingRouter.js
 
 // Server-side redirect for '/api' routes
 // app.use('/api', (req, res) => {
