@@ -1,4 +1,5 @@
 import Listing from '../models/listing.modal.js';
+import { errorHandler } from '../utils/error.js';
 
 export const createListing = async (req, res, next) => {
 
@@ -26,6 +27,27 @@ export const deleteListing = async (req, res, next) => {
     try{
         await Listing.findByIdAndDelete(req.params.id);
         return res.status(200).json({message: "Listing deleted successfully"});
+    } catch(error){
+        next(error);
+    }
+
+}
+
+const updateListing = async (req, res, next) => {
+
+    const listing = await Listing.findById(req.params.id);
+
+    if(!listing){
+        return next(errorHandler("Listing not found", 404));
+    }
+
+    if(req.user.id !== listing.userRef){
+        return next(errorHandler("You are not authorized to update this listing", 401));
+    }
+
+    try{
+        const updatedListing = await Listing.findByIdAndUpdate(req.params.id, req.body, {new: true});  // {new: true} is used to return the updated listing, not the old one
+        return res.status(200).json(updatedListing);
     } catch(error){
         next(error);
     }
