@@ -5,6 +5,7 @@ import {app} from '../firebase'
 import {updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure, signoutUserStart, signoutUserSuccess, signoutUserFailure  } from '../redux/user/userSlice'
 import {useDispatch} from 'react-redux'
 import {Link} from 'react-router-dom'
+import { getUserListings } from '../../../api/controllers/user.controller'
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -13,7 +14,9 @@ export default function Profile() {
   const [filePerc, setFilePerc] = useState(0);   
   const [fileUploadError, setFileUploadError] = useState(false);            //fileUploadError is the error message that is shown when the file is not uploaded to the firebase storage. It is empty at first, but when the file is not uploaded, it will be changed to the error message that is shown when the file is not uploaded.
   const [formData, setFormData] = useState({});                            //formData is the data that the user input in the form. It is empty at first, but when the user input the data in the form, it will be changed to the data that the user input in the form.
-  const [updateSuccess, setUpdateSuccess] = useState(false);               //updateSuccess is the message that is shown when the user is updated. It is empty at first, but when the user is updated, it will be changed to the message that is shown when the user is updated.
+  const [updateSuccess, setUpdateSuccess] = useState(false);      
+  const [showListingsError, setShowListingsError] = useState(false);        //updateSuccess is the message that is shown when the user is updated. It is empty at first, but when the user is updated, it will be changed to the message that is shown when the user is updated.
+  const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(()=>{
@@ -108,6 +111,23 @@ export default function Profile() {
     }
   };
 
+  const handleShowListings = async () => {
+
+    try{
+      setShowListingsError(false);
+      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        setShowListingsError(true);
+        return;
+      }
+      setUserListings(data);
+    }catch(error){
+      setShowListingsError(true);
+    }
+
+  }
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
@@ -148,6 +168,41 @@ export default function Profile() {
       <p className='text-green-700 mt-5'>
         {updateSuccess ? 'User is updated successfully!' : ''}
       </p>
+      <button onClick={handleShowListings} className='text-green-700 w-full' >Show listings</button>
+      <p className='text-red-700 mt-5' >{showListingsError ? 'Error showing listings' : ''}</p>
+      
+      {userListings &&
+        userListings.length > 0 &&
+        <div className="flex flex-col gap-4">
+          <h1 className='text-center mt-7 text-2xl font-semibold'>Your Listings</h1>
+          {userListings.map((listing) => (
+            <div
+              key={listing._id}
+              className='border rounded-lg p-3 flex justify-between items-center gap-4'
+            >
+              <Link to={`/listing/${listing._id}`}>
+                <img
+                  src={listing.imageUrls[0]}
+                  alt='listing cover'
+                  className='h-16 w-16 object-contain'
+                />
+              </Link>
+              <Link
+                className='text-slate-700 font-semibold  hover:underline truncate flex-1'
+                to={`/listing/${listing._id}`}
+              >
+                <p>{listing.name}</p>
+              </Link>
+
+              <div className='flex flex-col item-center'>
+                <button className='text-red-700 uppercase'>Delete</button>
+                <button className='text-green-700 uppercase'>Edit</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      }
+
     </div>
   );
 }
