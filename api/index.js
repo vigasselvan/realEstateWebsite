@@ -21,7 +21,7 @@ dotenv.config({ path: envFilePath });
 
 const port = process.env.PORT;
 const app = express();
-mongoose.connect("mongodb+srv://vigas_admin:bg9F63ccCOLsx1If@cluster0.v4cyaad.mongodb.net/User", { useNewUrlParser: true, useUnifiedTopology: true }).then( () => {
+mongoose.connect(process.env.URI, { useNewUrlParser: true, useUnifiedTopology: true }).then( () => {
     console.log('Connected to database ');
 })
 .catch( (err) => {
